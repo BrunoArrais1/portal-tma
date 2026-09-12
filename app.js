@@ -26,32 +26,58 @@ async function iniciar(){
                     .trim()
                     .toUpperCase() === "OUTRAS"
             );
+        const sigitm =
+            dadosTASK.filter(
+                linha =>
+                    String(linha["Operadora"])
+                    .trim()
+                    .toUpperCase() === "VIVO"
+            );
 
+        const task =
+            [...dadosTASK];
+             
         const workbook = new ExcelJS.Workbook();
 
-        const aba =
-            workbook.addWorksheet("TMA-PARCEIRAS");
+const abaParceiras =
+    workbook.addWorksheet("TMA-PARCEIRAS");
 
-        if(parceiros.length > 0){
+const abaSigitm =
+    workbook.addWorksheet("TMA-SIGITM");
 
-            aba.columns =
-                Object.keys(parceiros[0])
-                .map(coluna => ({
+const abaTask =
+    workbook.addWorksheet("TMA-TASK");
 
-                    header: coluna,
-                    key: coluna,
-                    width: 30
+function preencherAba(aba, dados){
 
-                }));
+    if(!dados.length) return;
 
-            parceiros.forEach(linha => {
+    aba.columns =
+        Object.keys(dados[0]).map(coluna => ({
+            header: coluna,
+            key: coluna,
+            width: 30
+        }));
 
-                aba.addRow(linha);
+    dados.forEach(linha => {
+        aba.addRow(linha);
+    });
+}
 
-            });
+preencherAba(
+    abaParceiras,
+    parceiros
+);
 
-        }
+preencherAba(
+    abaSigitm,
+    sigitm
+);
 
+preencherAba(
+    abaTask,
+    task
+);
         const buffer =
             await workbook.xlsx.writeBuffer();
 
@@ -71,13 +97,17 @@ async function iniciar(){
             window.URL.createObjectURL(blob);
 
         link.download =
-            "TMA-TESTE.xlsx";
+            "TMA-RELATORIO.xlsx";
 
         link.click();
 
-        document.getElementById("status")
-        .innerHTML =
-        `✅ Aba TMA-PARCEIRAS criada com ${parceiros.length} registros`;
+document.getElementById("status")
+.innerHTML =
+`
+✅ TMA-PARCEIRAS: ${parceiros.length} registros<br>
+✅ TMA-SIGITM: ${sigitm.length} registros<br>
+✅ TMA-TASK: ${task.length} registros
+`;
 
     }
     catch(erro){
