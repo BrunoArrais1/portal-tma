@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal TMA</title>
+
+    css/style.css
+
+    <!-- SheetJS -->
+    <script src="https://cdnjsom/ajax/libs/xlsx/0.18.5/xlsx.full.min.jsscript>
+
+    <!-- ExcelJS -->
+    <script src="https://cdnjs.m/ajax/libs/exceljs/4.4.0/exceljs.min.jsscript>
+
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Portal TMA</h1>
+        <p>Geração automática de relatórios TMA</p>
+
+        <div class="card">
+
+            <h3>Base INC</h3>
+
+            <input
+                type="file"
+                id="arquivoINC"
+                accept=".xlsx"
+            >
+
+        </div>
+
+        <div class="card">
+
+            <h3>Base TASK</h3>
+
+            <input
+                type="file"
+                id="arquivoTASK"
+                accept=".xlsx"
+            >
+
+        </div>
+
+        <div class="card">
+
+            <h3>Histórico TASK</h3>
+
+            <input
+                type="file"
+                id="arquivoHistorico"
+                accept=".xlsx"
+            >
+
+        </div>
+
+        <button id="btnGerar">
+            Gerar Relatório
+        </button>
+
+        <div id="status"></div>
+
+    </div>
+
+    js/app.jsscript>
+
+</body>
+</html>
