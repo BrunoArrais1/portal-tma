@@ -2,7 +2,7 @@ document
 .getElementById("btnGerar")
 .addEventListener("click", iniciar);
 
-async function iniciar(){
+function iniciar(){
 
     const arquivoINC =
         document.getElementById("arquivoINC").files[0];
@@ -19,12 +19,9 @@ async function iniciar(){
         return;
     }
 
-    document.getElementById("status").innerHTML =
-        "⏳ Lendo arquivos...";
-
-    console.log("Iniciando leitura");
-
-    console.log("INC:", arquivoINC.name);
-    console.log("TASK:", arquivoTASK.name);
-    console.log("HIST:", arquivoHistorico.name);
+    document.getElementById("status").innerHTML = `
+        ✅ Base INC: ${arquivoINC.name}<br>
+        ✅ Base TASK: ${arquivoTASK.name}<br>
+        ✅ Histórico: ${arquivoHistorico.name}
+    `;
 }
