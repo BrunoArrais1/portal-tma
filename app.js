@@ -8,16 +8,30 @@ async function iniciar(){
 
         const arquivoTASK =
             document.getElementById("arquivoTASK").files[0];
+        const arquivoINC =
+            document.getElementById("arquivoINC").files[0];
 
-        if(!arquivoTASK){
+        const arquivoHistorico =
+            document.getElementById("arquivoHistorico").files[0];
+        
+if(
+    !arquivoINC ||
+    !arquivoTASK ||
+    !arquivoHistorico
+){
 
-            alert("Selecione a base TASK.");
+    alert("Selecione os 3 arquivos.");
 
-            return;
-        }
+    return;
+}
 
         const dadosTASK =
             await lerExcel(arquivoTASK);
+        const dadosINC =
+            await lerExcel(arquivoINC);
+
+        const dadosHistorico =
+            await lerExcel(arquivoHistorico);
 
 const mapaINC = {};
 
@@ -54,7 +68,7 @@ dadosHistorico.forEach(linha => {
 });
         const parceiros =
 dadosTASK
-.filter(
+.map(
     linha =>
         String(linha["Operadora"])
         .trim()
@@ -83,7 +97,7 @@ dadosTASK
 });
         const sigitm =
 dadosTASK
-.filter(
+.map(
     linha =>
         String(linha["Operadora"])
         .trim()
