@@ -4,8 +4,6 @@ document
 
 async function iniciar(){
 
-    alert("1 - Entrou na função");
-
     const arquivoINC =
         document.getElementById("arquivoINC").files[0];
 
@@ -17,11 +15,16 @@ async function iniciar(){
 
     if(!arquivoINC || !arquivoTASK || !arquivoHistorico){
 
-        alert("2 - Falta arquivo");
-
+        alert("Selecione os 3 arquivos.");
         return;
     }
 
-    alert("3 - Arquivos encontrados");
+    document.getElementById("status").innerHTML =
+        "⏳ Lendo arquivos...";
 
+    console.log("Iniciando leitura");
+
+    console.log("INC:", arquivoINC.name);
+    console.log("TASK:", arquivoTASK.name);
+    console.log("HIST:", arquivoHistorico.name);
 }
