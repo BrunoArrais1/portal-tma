@@ -82,17 +82,15 @@ dadosTASK
     const inc =
         mapaINC[incidente];
 
-    return {
+const novaLinha = Object.assign({}, linha);
 
-        ...linha,
+novaLinha["INC Aberto em"] =
+    inc?.["INC Aberto em"] || "";
 
-        "INC Aberto em":
-            inc?.["INC Aberto em"] || "",
+novaLinha["INC Resolvido em:"] =
+    inc?.["INC Resolvido em:"] || "";
 
-        "INC Resolvido em:":
-            inc?.["INC Resolvido em:"] || ""
-
-    };
+return novaLinha;
 
 });
         const sigitm =
@@ -111,6 +109,7 @@ dadosTASK
     const inc =
         mapaINC[incidente];
 
+    console.log("LINHA TASK", linha);
     return {
 
         ...linha,
@@ -185,6 +184,10 @@ function preencherAba(aba, dados){
         aba.addRow(linha);
     });
 }
+
+console.log(parceiros[0]);
+console.log(sigitm[0]);
+console.log(task[0]);
 
 preencherAba(
     abaParceiras,
