@@ -4,93 +4,137 @@ document
 
 async function iniciar(){
 
-    const arquivoINC =
-        document.getElementById("arquivoINC").files[0];
-
-    const arquivoTASK =
-        document.getElementById("arquivoTASK").files[0];
-
-    const arquivoHistorico =
-        document.getElementById("arquivoHistorico").files[0];
-
-    if(!arquivoINC || !arquivoTASK || !arquivoHistorico){
-
-        alert("Selecione os 3 arquivos.");
-        return;
-    }
-
     try{
 
-        const dadosINC = await lerExcel(arquivoINC);
-        const dadosTASK = await lerExcel(arquivoTASK);
-        const dadosHistorico = await lerExcel(arquivoHistorico);
+        const arquivoTASK =
+            document.getElementById("arquivoTASK").files[0];
 
-        document.getElementById("status").innerHTML = `
-            ✅ Base INC: ${dadosINC.length} registros<br>
-            ✅ Base TASK: ${dadosTASK.length} registros<br>
-            ✅ Histórico TASK: ${dadosHistorico.length} registros
-        `;
+        if(!arquivoTASK){
 
-console.log("COLUNAS INC");
-console.log(Object.keys(dadosINC[0]));
+            alert("Selecione a base TASK.");
 
-console.log("COLUNAS TASK");
-console.log(Object.keys(dadosTASK[0]));
+            return;
+        }
 
-console.log("COLUNAS HISTORICO");
-console.log(Object.keys(dadosHistorico[0]));
+        const dadosTASK =
+            await lerExcel(arquivoTASK);
+
+        const parceiros =
+            dadosTASK.filter(
+                linha =>
+                    String(linha["Operadora"])
+                    .trim()
+                    .toUpperCase() === "OUTRAS"
+            );
+
+        const workbook = new ExcelJS.Workbook();
+
+        const aba =
+            workbook.addWorksheet("TMA-PARCEIRAS");
+
+        if(parceiros.length > 0){
+
+            aba.columns =
+                Object.keys(parceiros[0])
+                .map(coluna => ({
+
+                    header: coluna,
+                    key: coluna,
+                    width: 30
+
+                }));
+
+            parceiros.forEach(linha => {
+
+                aba.addRow(linha);
+
+            });
+
+        }
+
+        const buffer =
+            await workbook.xlsx.writeBuffer();
+
+        const blob =
+            new Blob(
+                [buffer],
+                {
+                    type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                }
+            );
+
+        const link =
+            document.createElement("a");
+
+        link.href =
+            window.URL.createObjectURL(blob);
+
+        link.download =
+            "TMA-TESTE.xlsx";
+
+        link.click();
+
+        document.getElementById("status")
+        .innerHTML =
+        `✅ Aba TMA-PARCEIRAS criada com ${parceiros.length} registros`;
 
     }
     catch(erro){
 
         console.error(erro);
 
-        document.getElementById("status").innerHTML =
-            "❌ Erro ao ler as planilhas.";
-
+        document.getElementById("status")
+        .innerHTML =
+        "❌ Erro ao gerar Excel.";
     }
 }
 
 function lerExcel(arquivo){
 
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve,reject)=>{
 
-        const reader = new FileReader();
+        const reader =
+            new FileReader();
 
-        reader.onload = function(e){
+        reader.onload =
+            function(e){
 
-            try{
+                try{
 
-                const data =
-                    new Uint8Array(e.target.result);
+                    const data =
+                        new Uint8Array(
+                            e.target.result
+                        );
 
-                const workbook =
-                    XLSX.read(data, {type:'array'});
+                    const workbook =
+                        XLSX.read(
+                            data,
+                            {type:"array"}
+                        );
 
-                const nomeAba =
-                    workbook.SheetNames[0];
+                    const worksheet =
+                        workbook.Sheets[
+                            workbook.SheetNames[0]
+                        ];
 
-                const worksheet =
-                    workbook.Sheets[nomeAba];
+                    const json =
+                        XLSX.utils.sheet_to_json(
+                            worksheet,
+                            {defval:""}
+                        );
 
-                const json =
-                    XLSX.utils.sheet_to_json(
-                        worksheet,
-                        {defval:""}
-                    );
+                    resolve(json);
 
-                resolve(json);
+                }
+                catch(erro){
 
-            }
-            catch(erro){
+                    reject(erro);
 
-                reject(erro);
-
-            }
-        };
+                }
+            };
 
         reader.readAsArrayBuffer(arquivo);
 
     });
-
 }
