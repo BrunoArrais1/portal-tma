@@ -31,9 +31,14 @@ async function iniciar(){
             ✅ Histórico TASK: ${dadosHistorico.length} registros
         `;
 
-        console.log("INC", dadosINC);
-        console.log("TASK", dadosTASK);
-        console.log("HISTÓRICO", dadosHistorico);
+console.log("COLUNAS INC");
+console.log(Object.keys(dadosINC[0]));
+
+console.log("COLUNAS TASK");
+console.log(Object.keys(dadosTASK[0]));
+
+console.log("COLUNAS HISTORICO");
+console.log(Object.keys(dadosHistorico[0]));
 
     }
     catch(erro){
