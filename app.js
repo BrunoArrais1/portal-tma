@@ -66,9 +66,9 @@ dadosHistorico.forEach(linha => {
     }
 
 });
-        const parceiros =
+    const parceiros =
 dadosTASK
-.map(
+.filter(
     linha =>
         String(linha["Operadora"])
         .trim()
@@ -93,9 +93,9 @@ novaLinha["INC Resolvido em:"] =
 return novaLinha;
 
 });
-        const sigitm =
+    const sigitm =
 dadosTASK
-.map(
+.filter(
     linha =>
         String(linha["Operadora"])
         .trim()
@@ -109,18 +109,15 @@ dadosTASK
     const inc =
         mapaINC[incidente];
 
-    console.log("LINHA TASK", linha);
-    return {
+const novaLinha = Object.assign({}, linha);
 
-        ...linha,
+novaLinha["INC Aberto em"] =
+    inc?.["INC Aberto em"] || "";
 
-        "INC Aberto em":
-            inc?.["INC Aberto em"] || "",
+novaLinha["INC Resolvido em:"] =
+    inc?.["INC Resolvido em:"] || "";
 
-        "INC Resolvido em:":
-            inc?.["INC Resolvido em:"] || ""
-
-    };
+return novaLinha;
 
 });
         const task =
@@ -185,10 +182,6 @@ function preencherAba(aba, dados){
     });
 }
 
-console.log(parceiros[0]);
-console.log(sigitm[0]);
-console.log(task[0]);
-
 preencherAba(
     abaParceiras,
     parceiros
@@ -235,14 +228,17 @@ document.getElementById("status")
 `;
 
     }
-    catch(erro){
+catch(erro){
 
-        console.error(erro);
+    console.error(erro);
 
-        document.getElementById("status")
-        .innerHTML =
-        "❌ Erro ao gerar Excel.";
-    }
+    document.getElementById("status")
+    .innerHTML =
+    `
+    ❌ Erro ao gerar Excel<br><br>
+    ${erro.message}
+    `;
+}
 }
 
 function lerExcel(arquivo){
