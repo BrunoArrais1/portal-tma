@@ -19,24 +19,132 @@ async function iniciar(){
         const dadosTASK =
             await lerExcel(arquivoTASK);
 
-        const parceiros =
-            dadosTASK.filter(
-                linha =>
-                    String(linha["Operadora"])
-                    .trim()
-                    .toUpperCase() === "OUTRAS"
-            );
-        const sigitm =
-            dadosTASK.filter(
-                linha =>
-                    String(linha["Operadora"])
-                    .trim()
-                    .toUpperCase() === "VIVO"
-            );
+const mapaINC = {};
 
+dadosINC.forEach(linha => {
+
+    mapaINC[
+        String(linha["incidente"]).trim()
+    ] = linha;
+
+});
+
+const mapaHistorico = {};
+
+dadosHistorico.forEach(linha => {
+
+    const incidente =
+        String(linha["incidente"]).trim();
+
+    const data =
+        linha["TASK Aberto em"];
+
+    if(!mapaHistorico[incidente]){
+
+        mapaHistorico[incidente] = [];
+
+    }
+
+    if(data){
+
+        mapaHistorico[incidente].push(data);
+
+    }
+
+});
+        const parceiros =
+dadosTASK
+.filter(
+    linha =>
+        String(linha["Operadora"])
+        .trim()
+        .toUpperCase() === "OUTRAS"
+)
+.map(linha => {
+
+    const incidente =
+        String(linha["incidente"]).trim();
+
+    const inc =
+        mapaINC[incidente];
+
+    return {
+
+        ...linha,
+
+        "INC Aberto em":
+            inc?.["INC Aberto em"] || "",
+
+        "INC Resolvido em:":
+            inc?.["INC Resolvido em:"] || ""
+
+    };
+
+});
+        const sigitm =
+dadosTASK
+.filter(
+    linha =>
+        String(linha["Operadora"])
+        .trim()
+        .toUpperCase() === "VIVO"
+)
+.map(linha => {
+
+    const incidente =
+        String(linha["incidente"]).trim();
+
+    const inc =
+        mapaINC[incidente];
+
+    return {
+
+        ...linha,
+
+        "INC Aberto em":
+            inc?.["INC Aberto em"] || "",
+
+        "INC Resolvido em:":
+            inc?.["INC Resolvido em:"] || ""
+
+    };
+
+});
         const task =
-            [...dadosTASK];
-             
+dadosTASK.map(linha => {
+
+    const incidente =
+        String(linha["incidente"]).trim();
+
+    const inc =
+        mapaINC[incidente];
+
+    const historico =
+        mapaHistorico[incidente] || [];
+
+    historico.sort(
+        (a,b) =>
+        new Date(a) - new Date(b)
+    );
+
+    return {
+
+        ...linha,
+
+        "INC Aberto em":
+            inc?.["INC Aberto em"] || "",
+
+        "Aberto TASK I":
+            historico[0] || "",
+
+        "Aberto ULT TASK":
+            historico[
+                historico.length - 1
+            ] || ""
+
+    };
+
+});
         const workbook = new ExcelJS.Workbook();
 
 const abaParceiras =
