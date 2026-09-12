@@ -15,14 +15,11 @@ function iniciar(){
 
     if(!inc || !task || !historico){
 
-        alert(
-            "Selecione os 3 arquivos."
-        );
+        alert("Selecione os 3 arquivos.");
 
         return;
     }
 
-    document.getElementById("status")
-    .innerHTML =
+    document.getElementById("status").innerHTML =
     "✅ Arquivos carregados corretamente.";
 }
